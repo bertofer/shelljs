@@ -60,8 +60,15 @@ function _ls(options, paths) {
       relName = relName.replace(/\\/g, '/');
     }
     if (options.long) {
-      stat = stat || fs.lstatSync(abs);
-      list.push(addLsAttributes(relName, stat));
+      try {
+        stat = stat || fs.lstatSync(abs);
+      } catch(e) {
+        stat = {
+          locked: true
+        };
+      } finally {
+        list.push(addLsAttributes(relName, stat));
+      }
     } else {
       // list.push(path.relative(rel || '.', file));
       list.push(relName);
